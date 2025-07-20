@@ -1,0 +1,108 @@
+// Basic structure of an E-learning platform using React and Tailwind CSS
+// Pages: Home, Courses, Course Details, Progress, Certificate
+
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
+
+const courses = [
+{ id: 1, title: 'HTML & CSS Basics', progress: 75, video: 'https://www.youtube.com/embed/1Rs2ND1ryYc' },
+{ id: 2, title: 'JavaScript Essentials', progress: 40, video: 'https://www.youtube.com/embed/W6NZfCO5SIk' },
+{ id: 3, title: 'React Introduction', progress: 10, video: 'https://www.youtube.com/embed/bMknfKXIFA8' }
+];
+
+function App() {
+return (
+<Router>
+    <nav className="bg-blue-600 text-white p-4 flex justify-between">
+        <h1 className="text-xl font-bold">CodTech E-Learning</h1>
+        <div className="space-x-4">
+            <Link to="/" className="hover:underline">Home</Link>
+            <Link to="/courses" className="hover:underline">Courses</Link>
+            <Link to="/progress" className="hover:underline">Progress</Link>
+            <Link to="/certificate" className="hover:underline">Certificate</Link>
+        </div>
+    </nav>
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:id" element={<CourseDetail />} />
+        <Route path="/progress" element={<Progress />} />
+        <Route path="/certificate" element={<Certificate />} />
+    </Routes>
+</Router>
+);
+}
+
+function Home() {
+return (
+<div className="p-8 text-center">
+    <h2 className="text-2xl font-semibold">Welcome to the E-Learning Platform</h2>
+    <p className="mt-4 text-gray-600">Learn at your own pace and earn a certificate!</p>
+</div>
+);
+}
+
+function Courses() {
+return (
+<div className="p-8">
+    <h2 className="text-xl font-semibold mb-4">Available Courses</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {courses.map(course => (
+        <Link key={course.id} to={`/courses/${course.id}`} className="border rounded-xl p-4 hover:shadow-xl">
+        <h3 className="font-bold">{course.title}</h3>
+        <p className="text-sm text-gray-500">Progress: {course.progress}%</p>
+        </Link>
+        ))}
+    </div>
+</div>
+);
+}
+
+function CourseDetail() {
+const id = window.location.pathname.split("/").pop();
+const course = courses.find(c => c.id.toString() === id);
+return (
+<div className="p-8">
+    <h2 className="text-2xl font-bold mb-4">{course?.title}</h2>
+    <div className="aspect-w-16 aspect-h-9">
+        <iframe className="w-full h-96" src={course?.video} title="Course Video" allowFullScreen></iframe>
+    </div>
+</div>
+);
+}
+
+function Progress() {
+return (
+<div className="p-8">
+    <h2 className="text-xl font-semibold mb-4">Your Progress</h2>
+    {courses.map(course => (
+    <div key={course.id} className="mb-4">
+        <h3 className="font-medium">{course.title}</h3>
+        <div className="w-full bg-gray-200 rounded-full h-4">
+            <div className="bg-green-500 h-4 rounded-full" style={{ width: `${course.progress}%` }}></div>
+        </div>
+        <p className="text-sm text-gray-500">{course.progress}% completed</p>
+    </div>
+    ))}
+</div>
+);
+}
+
+function Certificate() {
+const internshipEndDate = new Date();
+internshipEndDate.setMonth(internshipEndDate.getMonth() + 1);
+const dateStr = internshipEndDate.toLocaleDateString();
+return (
+<div className="p-8 text-center">
+    <h2 className="text-2xl font-bold">Certificate of Completion</h2>
+    <p className="mt-4">This certificate will be issued on: <strong>{dateStr}</strong></p>
+    <div className="border-2 border-dashed border-gray-400 mt-8 p-8">
+        <p className="text-lg italic">[Your Name]</p>
+        <p>has successfully completed the internship with CodTech.</p>
+        <p className="mt-4">Issued on: {dateStr}</p>
+    </div>
+</div>
+);
+}
+
+export default App;
